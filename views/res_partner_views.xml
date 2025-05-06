@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit_approval" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.approval</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header" position="inside">
+                <button name="button_draft" string="Reject" type="object"
+                        class="btn-primary"
+                        groups="bi_contact_approval.group_sales_administrator,bi_contact_approval.group_finance_administrator"
+                        invisible="state == 'draft'"/>
+                <button name="button_approve" string="Sales Approve" type="object"
+                        class="btn-primary"
+                        groups="bi_contact_approval.group_sales_administrator"
+                        invisible="state in ('approve', 'approve2')"/>
+                <button name="button_approve2" string="Finance Approve" type="object"
+                        class="btn-primary"
+                        groups="bi_contact_approval.group_finance_administrator"
+                        invisible="state in ('draft', 'approve2')"/>
+                <field name="state" widget="statusbar"/>
+                <field name="has_group" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="email_template_contact_sales_approved" model="mail.template">
+        <field name="name">Contact: Sales Approved</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="subject">Contact Sales Approval: {{ object.name }}</field>
+        <field name="body_html" type="html">
+            <div>
+                Contact {{ object.name }} has been approved by the Sales Manager.<br/>
+                Please proceed with Finance review.
+            </div>
+        </field>
+    </record>
+
+    <record id="email_template_contact_finance_approved" model="mail.template">
+        <field name="name">Contact: Finance Approved</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="subject">Contact Fully Approved: {{ object.name }}</field>
+        <field name="body_html" type="html">
+            <div>
+                Contact {{ object.name }} has passed Finance approval and is now fully approved.
+            </div>
+        </field>
+    </record>
+</odoo>
